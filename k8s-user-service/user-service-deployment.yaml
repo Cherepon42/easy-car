@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service #ClusterIP by default
+metadata:
+  name: user-service-cluster-ip
+  labels:
+    app: user-service
+spec:
+  ports:
+    - port: 8081
+      targetPort: 8080
+      name: http
+  selector:
+    app: user-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-deployment
+  labels:
+    app: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service-container
+          image: uladzislauc/demo:2 #Image from registry
+          imagePullPolicy: Always
+          env:
+            - name: "MAIN_PORT" #Port that app will listening
+              value: "8080"
+          envFrom:
+            - configMapRef:
+                name: db-secret-credentials #Name of configmap (DB)
+          ports:
+            - containerPort: 8080
+---

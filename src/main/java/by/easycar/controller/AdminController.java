@@ -139,5 +139,4 @@ public class AdminController {
     private ResponseEntity<List<UserInnerResponse>> getAllInnerUsers() {
         return new ResponseEntity<>(adminService.getAllInnerUsers(), HttpStatus.OK);
     }
-
 }

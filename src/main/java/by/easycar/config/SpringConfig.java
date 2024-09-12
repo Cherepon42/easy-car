@@ -24,6 +24,13 @@ import static io.swagger.v3.oas.models.security.SecurityScheme.Type;
 @EnableAspectJAutoProxy
 public class SpringConfig {
 
+
+
+
+
+
+
+
     @Bean
     public Validator getValidator() {
         ValidatorFactory factory = Validation.byProvider(HibernateValidator.class).configure().buildValidatorFactory();

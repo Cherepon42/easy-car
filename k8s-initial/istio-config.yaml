@@ -1,0 +1,43 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: "istio-operator-log"
+spec:
+  meshConfig:
+    accessLogFile: /dev/stdout
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+    - port:
+        number: 80 #Port of gateway
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: virtual-service
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - istio-gateway #Our gateway
+  http:
+    - match:
+        - uri:
+            prefix: /user-service/
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: user-service-cluster-ip #Service name (ClusterIP)
+            port:
+              number: 8081 #Port to which clusterIP is listening
